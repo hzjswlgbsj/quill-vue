@@ -1,6 +1,10 @@
 # vue-quill
 
-> A Vue.js project
+> 这是基于[vue-quill-editor](https://github.com/surmon-china/vue-quill-editor)的项目，将[quill](https://github.com/quilljs/quill)的版本升级到了3.x（还未正式发布，请谨慎使用）。在本项目里面集成了一些quill的[优秀模块](https://github.com/quilljs/awesome-quill#awesome-quill-)，方便使用。
+
+另外，本项目加入自己尝试写的模块，可能仅仅适用于我们自己的项目，所以建议不要直接使用本包，可以参考后自己集成一个。
+
+
 
 ## Build Setup
 
