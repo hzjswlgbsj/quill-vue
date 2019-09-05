@@ -1,9 +1,14 @@
 {
-  "name": "vue-quill",
-  "version": "1.0.0",
+  "name": "quill-vue",
+  "version": "1.0.4",
   "description": "A Vue.js project",
   "author": "sixty",
-  "private": true,
+  "private": false,
+  "main": "dist/quill-vue.js",
+  "unpkg": "dist/quill-vue.min.js",
+  "module": "dist/quill-vue.esm.js",
+  "prepublishOnly": "npm run build",
+  "license": "MIT",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
@@ -13,7 +18,10 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "quill": "^1.3.6"
+    "quill": "^2.0.0-dev.3",
+    "quill-image-drop-module": "^1.0.3",
+    "quill-image-resize-module": "^3.0.0",
+    "quill-markdown-shortcuts": "^0.0.10"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
@@ -30,6 +38,7 @@
     "babel-preset-env": "^1.3.2",
     "babel-preset-stage-2": "^6.22.0",
     "chalk": "^2.0.1",
+    "compression-webpack-plugin": "^1.1.12",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.0",
     "eslint": "^4.15.0",
@@ -44,10 +53,13 @@
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^1.1.4",
     "friendly-errors-webpack-plugin": "^1.6.1",
+    "highlight.js": "^9.15.10",
     "html-webpack-plugin": "^2.30.1",
     "jest": "^22.0.4",
     "jest-serializer-vue": "^0.3.0",
+    "mini-css-extract-plugin": "^0.5.0",
     "node-notifier": "^5.1.2",
+    "node-sass": "^4.11.0",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
     "ora": "^1.2.0",
     "portfinder": "^1.0.13",
@@ -55,8 +67,10 @@
     "postcss-loader": "^2.0.8",
     "postcss-url": "^7.2.1",
     "rimraf": "^2.6.0",
+    "sass-loader": "^7.1.0",
     "semver": "^5.3.0",
     "shelljs": "^0.7.6",
+    "style-loader": "^0.23.1",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
     "vue": "^2.6.10",
@@ -65,7 +79,7 @@
     "vue-router": "^3.1.3",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
-    "webpack": "^3.6.0",
+    "webpack": "^3.12.0",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
     "webpack-merge": "^4.1.0"

@@ -3,6 +3,7 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
+const webpack = require('webpack')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -20,17 +21,8 @@ const createLintingRule = () => ({
 })
 
 module.exports = {
+  
   context: path.resolve(__dirname, '../'),
-  entry: {
-    app: './example/main.js'
-  },
-  output: {
-    path: config.build.assetsRoot,
-    filename: '[name].js',
-    publicPath: process.env.NODE_ENV === 'production'
-      ? config.build.assetsPublicPath
-      : config.dev.assetsPublicPath
-  },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
@@ -38,6 +30,13 @@ module.exports = {
       '@': resolve('example'),
     }
   },
+
+  plugins: [
+    new webpack.ProvidePlugin({
+      'window.Quill': 'quill'
+    })
+  ],
+
   module: {
     rules: [
       ...(config.dev.useEslint ? [createLintingRule()] : []),
@@ -50,6 +49,19 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [resolve('example'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader'
+        ]
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          'css-loader',
+          'sass-loader'
+        ]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

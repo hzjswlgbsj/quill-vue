@@ -1,13 +1,23 @@
 <template>
-  <div class="quill-editor">
+  <div class="quill-editor" :style="heightStyle">
     <slot name="toolbar"></slot>
     <div ref="editor"></div>
   </div>
 </template>
 
 <script>
+import options from './options'
 import _Quill from 'quill'
-import defaultOptions from './options'
+import 'quill/dist/quill.snow.css'
+import { ImageDrop } from 'quill-image-drop-module'
+import ImageResize from 'quill-image-resize-module'
+import MarkdownShortcuts from 'quill-markdown-shortcuts'
+
+// register modules
+_Quill.register('modules/imageDrop', ImageDrop)
+_Quill.register('modules/ImageResize', ImageResize)
+_Quill.register('modules/markdownShortcuts', MarkdownShortcuts)
+
 const Quill = window.Quill || _Quill
 // pollfill
 if (typeof Object.assign !== 'function') {
@@ -35,87 +45,57 @@ if (typeof Object.assign !== 'function') {
 }
 
 export default {
-  name: 'quill-editor',
-  data () {
-    return {
-      localOptions: {},
-      localContent: '',
-      defaultOptions
-    }
-  },
+  name: 'quill-vue',
+
   props: {
-    content: String,
-    value: String,
+    content: {
+      type: String,
+      default: ''
+    },
+    value: {
+      type: String,
+      default: ''
+    },
+    placeholder: {
+      type: String,
+      default: 'Insert text here ...'
+    },
     disabled: {
       type: Boolean,
       default: false
     },
-    options: {
-      type: Object,
-      required: false,
-      default: () => ({})
+    height: {
+      type: String,
+      default: '500px'
     },
-    globalOptions: {
-      type: Object,
-      required: false,
-      default: () => ({})
+    readOnly: {
+      type: Boolean,
+      default: false
     }
   },
-  mounted () {
-    this.initialize()
-  },
-  beforeDestroy () {
-    this.quill = null
-    delete this.quill
-  },
-  methods: {
-    // Init Quill instance
-    initialize () {
-      if (this.$el) {
-        // Options
-        this.localOptions = Object.assign({}, this.defaultOptions, this.globalOptions, this.options)
-        // Instance
-        this.quill = new Quill(this.$refs.editor, this.localOptions)
 
-        this.quill.enable(false)
-        // Set editor content
-        if (this.value || this.content) {
-          this.quill.dangerouslyPasteHTML(this.value || this.content)
-        }
-        // Disabled editor
-        if (!this.disabled) {
-          this.quill.enable(true)
-        }
-        // Mark model as touched if editor lost focus
-        this.quill.on('selection-change', range => {
-          if (!range) {
-            this.$emit('blur', this.quill)
-          } else {
-            this.$emit('focus', this.quill)
-          }
-        })
-        // Update model if text changes
-        this.quill.on('text-change', (delta, oldDelta, source) => {
-          let html = this.$refs.editor.children[0].innerHTML
-          const quill = this.quill
-          const text = this.quill.getText()
-          if (html === '<p><br></p>') html = ''
-          this.localContent = html
-          this.$emit('input', this.localContent)
-          this.$emit('change', { html, text, quill })
-        })
-        // Emit ready event
-        this.$emit('ready', this.quill)
+  data () {
+    return {
+      localContent: '',
+      options
+    }
+  },
+
+  computed: {
+    heightStyle () {
+      return {
+        height: this.height
       }
     }
   },
+
   watch: {
     // Watch content change
     content (newVal, oldVal) {
       if (this.quill) {
         if (newVal && newVal !== this.localContent) {
           this.localContent = newVal
-          this.quill.dangerouslyPasteHTML(newVal)
+          this.quill.clipboard.dangerouslyPasteHTML(newVal)
         } else if (!newVal) {
           this.quill.setText('')
         }
@@ -126,7 +106,7 @@ export default {
       if (this.quill) {
         if (newVal && newVal !== this.localContent) {
           this.localContent = newVal
-          this.quill.dangerouslyPasteHTML(newVal)
+          this.quill.clipboard.dangerouslyPasteHTML(newVal)
         } else if (!newVal) {
           this.quill.setText('')
         }
@@ -138,6 +118,89 @@ export default {
         this.quill.enable(!newVal)
       }
     }
+  },
+
+  methods: {
+    // Init Quill instance
+    initialize () {
+      if (this.$el) {
+        // readOnly
+        this.options.readOnly = this.readOnly
+
+        // placeholder
+        this.options.placeholder = this.placeholder
+
+        // Add history config
+        this.options.modules.history = {
+          delay: 1000,
+          maxStack: 50,
+          userOnly: false
+        }
+
+        // Add some awesome Modules
+        this.options.modules.imageDrop = true
+        this.options.modules.ImageResize = {
+          displayStyles: {
+            backgroundColor: 'white',
+            border: 'none',
+            color: 'black'
+          },
+          handleStyles: {
+            backgroundColor: 'black',
+            border: 'none',
+            color: 'white'
+          },
+          modules: [ 'Resize', 'DisplaySize', 'Toolbar' ]
+        }
+        this.options.modules.markdownShortcuts = {}
+
+        // Instance
+        this.quill = new Quill(this.$refs.editor, this.options)
+
+        this.quill.enable(false)
+
+        // Set editor content
+        if (this.value || this.content) {
+          this.quill.clipboard.dangerouslyPasteHTML(this.value || this.content)
+        }
+
+        // Disabled editor
+        if (!this.disabled) {
+          this.quill.enable(true)
+        }
+
+        // Mark model as touched if editor lost focus
+        this.quill.on('selection-change', range => {
+          if (!range) {
+            this.$emit('blur', this.quill)
+          } else {
+            this.$emit('focus', this.quill)
+          }
+        })
+
+        // Update model if text changes
+        this.quill.on('text-change', (delta, oldDelta, source) => {
+          let html = this.$refs.editor.children[0].innerHTML
+          const quill = this.quill
+          const text = this.quill.getText()
+          if (html === '<p><br></p>') html = ''
+          this.localContent = html
+          this.$emit('input', this.localContent)
+          this.$emit('change', { html, text, quill, change: {delta, oldDelta, source} })
+        })
+        // Emit ready event
+        this.$emit('ready', this.quill)
+      }
+    }
+  },
+
+  mounted () {
+    this.initialize()
+  },
+
+  beforeDestroy () {
+    this.quill = null
+    delete this.quill
   }
 }
 </script>

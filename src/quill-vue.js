@@ -1,4 +1,3 @@
-
 /*
 * Vue-Quill index.js
 * Author: hiliulin@aliyun.com
@@ -10,10 +9,7 @@ import _Quill from 'quill'
 import quillEditor from './Editor.vue'
 
 const Quill = window.Quill || _Quill
-const install = (Vue, globalOptions) => {
-  if (globalOptions) {
-    quillEditor.props.globalOptions.default = () => globalOptions
-  }
+const install = (Vue) => {
   Vue.component(quillEditor.name, quillEditor)
 }
 
