@@ -1,8 +1,9 @@
 {
   "name": "quill-vue",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A Vue.js project",
   "author": "sixty",
+  "keywords": ["quill", "quill-vue"],
   "private": false,
   "main": "dist/quill-vue.js",
   "unpkg": "dist/quill-vue.min.js",
@@ -53,7 +54,6 @@
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^1.1.4",
     "friendly-errors-webpack-plugin": "^1.6.1",
-    "highlight.js": "^9.15.10",
     "html-webpack-plugin": "^2.30.1",
     "jest": "^22.0.4",
     "jest-serializer-vue": "^0.3.0",

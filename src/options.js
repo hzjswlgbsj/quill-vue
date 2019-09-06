@@ -1,13 +1,7 @@
-import hljs from 'highlight.js'
-import 'highlight.js/styles/androidstudio.css' // 可以在这里更换喜欢的，后面可以参考mavon-editor封装成一个参数
-
 export default {
   theme: 'snow',
   boundary: document.body,
   modules: {
-    syntax: {
-      highlight: text => hljs.highlightAuto(text).value
-    },
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'],
       ['blockquote', 'code-block'],
@@ -21,8 +15,8 @@ export default {
       [{ 'color': [] }, { 'background': [] }],
       [{ 'font': [] }],
       [{ 'align': [] }],
-      ['clean'],
-      ['link', 'image', 'video']
+      ['link', 'image', 'video', 'formula'],
+      ['clean']
     ]
   },
   placeholder: 'Insert text here ...',

@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import options from './options'
+import defaultOptions from './options'
 import _Quill from 'quill'
 import 'quill/dist/quill.snow.css'
 import { ImageDrop } from 'quill-image-drop-module'
@@ -56,9 +56,10 @@ export default {
       type: String,
       default: ''
     },
-    placeholder: {
-      type: String,
-      default: 'Insert text here ...'
+    options: {
+      type: Object,
+      required: false,
+      default: () => ({})
     },
     disabled: {
       type: Boolean,
@@ -67,17 +68,14 @@ export default {
     height: {
       type: String,
       default: '500px'
-    },
-    readOnly: {
-      type: Boolean,
-      default: false
     }
   },
 
   data () {
     return {
       localContent: '',
-      options
+      localOptions: {},
+      defaultOptions
     }
   },
 
@@ -124,11 +122,8 @@ export default {
     // Init Quill instance
     initialize () {
       if (this.$el) {
-        // readOnly
-        this.options.readOnly = this.readOnly
-
-        // placeholder
-        this.options.placeholder = this.placeholder
+        // Options
+        this._options = Object.assign({}, this.defaultOptions, this.options)
 
         // Add history config
         this.options.modules.history = {
@@ -155,7 +150,7 @@ export default {
         this.options.modules.markdownShortcuts = {}
 
         // Instance
-        this.quill = new Quill(this.$refs.editor, this.options)
+        this.quill = new Quill(this.$refs.editor, this._options)
 
         this.quill.enable(false)
 
