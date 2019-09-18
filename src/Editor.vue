@@ -23,7 +23,7 @@ _Quill.register({
 
 const Quill = window.Quill || _Quill
 
-console.log('Quill.imports', Quill.imports)
+// console.log('Quill.imports', Quill.imports)
 // pollfill
 if (typeof Object.assign !== 'function') {
   Object.defineProperty(Object, 'assign', {
@@ -202,13 +202,16 @@ export default {
 
         // Update model if text changes
         this.quill.on('text-change', (delta, oldDelta, source) => {
-          let html = this.$refs.editor.children[0].innerHTML
-          const quill = this.quill
-          const text = this.quill.getText()
-          if (html === '<p><br></p>') html = ''
-          this.localContent = html
-          this.$emit('input', this.localContent)
-          this.$emit('change', { html, text, quill, change: {delta, oldDelta, source} })
+          // 输入法结束后再处理事件
+          if (!this.quill.selection.composing) {
+            let html = this.$refs.editor.children[0].innerHTML
+            const quill = this.quill
+            const text = this.quill.getText()
+            if (html === '<p><br></p>') html = ''
+            this.localContent = html
+            this.$emit('input', this.localContent)
+            this.$emit('change', { html, text, quill, change: {delta, oldDelta, source} })
+          }
         })
         // Emit ready event
         this.$emit('ready', this.quill)
