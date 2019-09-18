@@ -1,8 +1,8 @@
 <template>
   <div>
-    <button click="handleClick">{{ text }}</button>
+    <button @click="handleClick">{{ text }}</button>
   </div>
-</template>>
+</template>
 
 <script>
 export default {

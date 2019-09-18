@@ -1,9 +1,6 @@
 <template>
   <div class="quill-editor" :style="heightStyle">
     <slot name="toolbar"></slot>
-    <button ref="iframe">Iframe</button>
-    <button ref="video">Video</button>
-    <button ref="vuecomp">vuecomp</button>
     <div ref="editor"></div>
   </div>
 </template>
@@ -14,21 +11,15 @@ import _Quill from 'quill'
 import { ImageDrop } from 'quill-image-drop-module'
 import ImageResize from 'quill-image-resize-module'
 import MarkdownShortcuts from 'quill-markdown-shortcuts'
-import IntegratedCustom from 'quill-integrated-custom-blot'
-// import { IframeBlot, TweetBlot, VideoBlot, VuecompBlot, IntegratedCustom } from 'quill-integrated-custom-blot'
+import 'quill-integrated-custom'
 import Test from './Test'
 
 // register modules
 _Quill.register({
   'modules/imageDrop': ImageDrop,
   'modules/ImageResize': ImageResize,
-  'modules/markdownShortcuts': MarkdownShortcuts,
-  'modules/integratedCustom': IntegratedCustom
+  'modules/markdownShortcuts': MarkdownShortcuts
 }, true)
-// _Quill.register('formats/iframe', IframeBlot)
-// _Quill.register('formats/tweet', TweetBlot)
-// _Quill.register('formats/video', VideoBlot, true)
-// _Quill.register('formats/vuecomp', VuecompBlot)
 
 const Quill = window.Quill || _Quill
 
@@ -88,7 +79,6 @@ export default {
   data () {
     return {
       localContent: '',
-      localOptions: {},
       defaultOptions
     }
   },
@@ -162,7 +152,29 @@ export default {
           modules: [ 'Resize', 'DisplaySize', 'Toolbar' ]
         }
         this._options.modules.markdownShortcuts = {}
-        this._options.modules.integratedCustom = {}
+        // this._options.modules.integratedCustom = {}
+        this._options.modules.customIframe = {
+          width: '100%',
+          height: '500px'
+        }
+        this._options.modules.customVideo = {
+          width: '100%',
+          height: '500px'
+        }
+        this._options.modules.customVuecomp = {
+          viewComponent: Test,
+          formComponent: Test,
+          createElementData: {
+            props: {
+              text: '测试'
+            },
+            on: {
+              'test-click': (msg) => {
+                alert(msg)
+              }
+            }
+          }
+        }
 
         // Instance
         this.quill = new Quill(this.$refs.editor, this._options)
@@ -206,38 +218,6 @@ export default {
 
   mounted () {
     this.initialize()
-    const integratedCustomModule = this.quill.getModule('integratedCustom')
-
-    // 插入iframe
-    integratedCustomModule.insertIframe(this.$refs.iframe, {
-      width: '100%',
-      height: '500px'
-    })
-
-    // 插入video
-    // const src = 'https://lib.sixtyden.com/%E8%BF%BD%E5%85%89%E8%80%85mv.mp4';
-    // const src = 'https://player.youku.com/embed/XMzQ4ODE3NDQ4MA=='; // youku播放地址
-    // const src = 'https://www.youtube.com/watch?v=qI9xIe9KtVU'; // youtube播放地址
-    integratedCustomModule.insertVideo(this.$refs.video, {
-      width: '100%',
-      height: '600px'
-    })
-
-    // 插入vue组件
-    integratedCustomModule.insertVuecomp(this.$refs.vuecomp, {
-      viewComponent: Test,
-      formComponent: Test,
-      createElementData: {
-        props: {
-          text: '测试'
-        },
-        on: {
-          'test-click': (msg) => {
-            alert(msg)
-          }
-        }
-      }
-    })
   },
 
   beforeDestroy () {
