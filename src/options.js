@@ -15,8 +15,7 @@ export default {
       [{ 'color': [] }, { 'background': [] }],
       [{ 'font': [] }],
       [{ 'align': [] }],
-      ['link', 'image', 'video', 'formula'],
-      ['iframe', 'video-another', 'vuecomp'],
+      ['link', 'image', 'video-another', 'iframe', 'vuecomp', 'formula'],
       ['clean']
     ]
   },
