@@ -12,13 +12,15 @@ import { ImageDrop } from 'quill-image-drop-module'
 import ImageResize from 'quill-image-resize-module'
 import MarkdownShortcuts from 'quill-markdown-shortcuts'
 import 'quill-integrated-custom'
+import imageUpload from 'quill-plugin-image-upload'
 import Test from './Test'
 
 // register modules
 _Quill.register({
   'modules/imageDrop': ImageDrop,
   'modules/ImageResize': ImageResize,
-  'modules/markdownShortcuts': MarkdownShortcuts
+  'modules/markdownShortcuts': MarkdownShortcuts,
+  'modules/imageUpload': imageUpload
 }, true)
 
 const Quill = window.Quill || _Quill
@@ -173,6 +175,21 @@ export default {
                 alert(msg)
               }
             }
+          }
+        }
+        this._options.modules.imageUploadHandle = {
+          upload: file => {
+            console.log('正在上传...', file)
+            // return a Promise that resolves in a link to the uploaded image
+            const ret = new Promise((resolve, reject) => {
+              resolve('https://lib.sixtyden.com/201808020245150.jpg')
+            })
+
+            ret.then((url) => {
+              console.log(111111111111, url)
+            })
+
+            return ret
           }
         }
 
