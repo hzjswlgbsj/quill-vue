@@ -23,9 +23,28 @@ _Quill.register({
   'modules/imageUpload': imageUpload
 }, true)
 
+// 增加字体
+const fonts = [
+  'Microsoft-YaHei',
+  '宋体', 'SimSun', 'Songti', 'SC', 'sans-serif',
+  '黑体', 'SimHei', 'Heiti',
+  '冬青黑简体中文', 'Hiragino', 'Sans', 'GB',
+  '苹方', 'PingFang',
+  '华文宋体', 'STSong',
+  '华文仿宋', 'FangSong', 'STFangsong', 'Fangsong',
+  '华文楷体', 'STKaiti', 'Kaiti'
+]
+const Font = _Quill.import('attributors/style/font')
+Font.whitelist = fonts // 将字体加入到白名单
+_Quill.register(Font, true)
+
+// 增加字体大小
+var Size = _Quill.import('attributors/style/size')
+Size.whitelist = ['10px', '11px', '12px', '14px', '16px', '18px', '22px', '24px', '30px', '36px']
+_Quill.register(Size, true)
+
 const Quill = window.Quill || _Quill
 
-// console.log('Quill.imports', Quill.imports)
 // pollfill
 if (typeof Object.assign !== 'function') {
   Object.defineProperty(Object, 'assign', {
@@ -72,9 +91,9 @@ export default {
       type: Boolean,
       default: false
     },
-    height: {
+    minHeight: {
       type: String,
-      default: '500px'
+      default: ''
     }
   },
 
@@ -87,8 +106,10 @@ export default {
 
   computed: {
     heightStyle () {
-      return {
-        height: this.height
+      if (this.minHeight) {
+        return {
+          'min-height': this.minHeight
+        }
       }
     }
   },
@@ -186,7 +207,7 @@ export default {
             })
 
             ret.then((url) => {
-              console.log(111111111111, url)
+              console.log('上传成功', url)
             })
 
             return ret
@@ -209,7 +230,8 @@ export default {
         }
 
         // Mark model as touched if editor lost focus
-        this.quill.on('selection-change', range => {
+        this.quill.on('selection-change', (range, oldRange, source) => {
+          this.$emit('selection-change', {range, oldRange, source})
           if (!range) {
             this.$emit('blur', this.quill)
           } else {
@@ -227,7 +249,7 @@ export default {
             if (html === '<p><br></p>') html = ''
             this.localContent = html
             this.$emit('input', this.localContent)
-            this.$emit('change', { html, text, quill, change: {delta, oldDelta, source} })
+            this.$emit('text-change', { html, text, quill, change: {delta, oldDelta, source} })
           }
         })
         // Emit ready event
@@ -247,7 +269,8 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+@import "./assets/quill-vue.scss";
 pre,
 code {
   font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
