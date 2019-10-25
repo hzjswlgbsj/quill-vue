@@ -71,8 +71,10 @@ export declare class QuillEditor extends Vue {
     /**
      * 自定义toolbar
      */
-    to0lbar: VNode[];
+    toolbar: VNode[];
   };
 }
 
-export declare class Quill {}
+export declare class Quill {
+  import(): any
+}
