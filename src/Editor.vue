@@ -23,25 +23,29 @@ _Quill.register({
   'modules/imageUpload': imageUpload
 }, true)
 
-// 增加字体
-const fonts = [
-  'Microsoft-YaHei',
-  '宋体', 'SimSun', 'Songti', 'SC', 'sans-serif',
-  '黑体', 'SimHei', 'Heiti',
-  '冬青黑简体中文', 'Hiragino', 'Sans', 'GB',
-  '苹方', 'PingFang',
-  '华文宋体', 'STSong',
-  '华文仿宋', 'FangSong', 'STFangsong', 'Fangsong',
-  '华文楷体', 'STKaiti', 'Kaiti'
-]
-const Font = _Quill.import('attributors/style/font')
-Font.whitelist = fonts // 将字体加入到白名单
-_Quill.register(Font, true)
-
 // 增加字体大小
 var Size = _Quill.import('attributors/style/size')
 Size.whitelist = ['10px', '11px', '12px', '14px', '16px', '18px', '22px', '24px', '30px', '36px']
 _Quill.register(Size, true)
+
+// 增加字体
+const Font = _Quill.import('attributors/style/font')
+Font.whitelist = [
+  'Microsoft YaHei',
+  'SimSun',
+  'SimHei',
+  'Hiragino',
+  'PingFang',
+  'STSong',
+  'STFangsong',
+  'STKaiti',
+  'Arial',
+  'Times New Roman',
+  'Calibri',
+  'Comic Sans MS',
+  'Courier New'
+]
+_Quill.register(Font, true)
 
 const Quill = window.Quill || _Quill
 
@@ -270,13 +274,12 @@ export default {
 </script>
 
 <style lang="scss">
-@import "./assets/quill-vue.scss";
 pre,
 code {
   font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
 }
 .quill-editor > .ql-snow .ql-editor pre.ql-syntax {
   background-color: #f0f0f0;
-  color: #2c3e50;
+  color: #2c3e50a9;
 }
 </style>

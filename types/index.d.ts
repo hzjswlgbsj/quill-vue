@@ -74,3 +74,5 @@ export declare class QuillEditor extends Vue {
     to0lbar: VNode[];
   };
 }
+
+export declare class Quill {}
