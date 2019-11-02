@@ -8,28 +8,20 @@
 <script>
 import defaultOptions from './options'
 import _Quill from 'quill'
-import { ImageDrop } from 'quill-image-drop-module'
-import ImageResize from 'quill-image-resize-module'
+// import { ImageDrop } from 'quill-image-drop-module'
+// import ImageResize from 'quill-image-resize-module'
 import MarkdownShortcuts from 'quill-markdown-shortcuts'
 import 'quill-integrated-custom'
-import imageUpload from 'quill-plugin-image-upload'
+// import imageUpload from 'quill-plugin-image-upload'
 import Test from './Test'
 
-// register modules
-_Quill.register({
-  'modules/imageDrop': ImageDrop,
-  'modules/ImageResize': ImageResize,
-  'modules/markdownShortcuts': MarkdownShortcuts,
-  'modules/imageUpload': imageUpload
-}, true)
+const Size = _Quill.import('attributors/style/size')
+const Font = _Quill.import('attributors/style/font')
 
 // 增加字体大小
-var Size = _Quill.import('attributors/style/size')
 Size.whitelist = ['10px', '11px', '12px', '14px', '16px', '18px', '22px', '24px', '30px', '36px']
-_Quill.register(Size, true)
 
 // 增加字体
-const Font = _Quill.import('attributors/style/font')
 Font.whitelist = [
   'Microsoft YaHei',
   'SimSun',
@@ -45,11 +37,22 @@ Font.whitelist = [
   'Comic Sans MS',
   'Courier New'
 ]
+
+// register Size、Font
+_Quill.register(Size, true)
 _Quill.register(Font, true)
+
+// register modules
+_Quill.register({
+  // 'modules/imageDrop': ImageDrop,
+  // 'modules/ImageResize': ImageResize,
+  'modules/markdownShortcuts': MarkdownShortcuts,
+  // 'modules/imageUpload': imageUpload
+}, true)
 
 const Quill = window.Quill || _Quill
 
-// pollfill
+// pollfill Object.assign
 if (typeof Object.assign !== 'function') {
   Object.defineProperty(Object, 'assign', {
     value (target, varArgs) {
@@ -104,7 +107,8 @@ export default {
   data () {
     return {
       localContent: '',
-      defaultOptions
+      defaultOptions,
+      isInputChinese: false
     }
   },
 
@@ -164,22 +168,21 @@ export default {
         }
 
         // Add some awesome Modules
-        this._options.modules.imageDrop = true
-        this._options.modules.ImageResize = {
-          displayStyles: {
-            backgroundColor: 'white',
-            border: 'none',
-            color: 'black'
-          },
-          handleStyles: {
-            backgroundColor: 'black',
-            border: 'none',
-            color: 'white'
-          },
-          modules: [ 'Resize', 'DisplaySize', 'Toolbar' ]
-        }
+        // this._options.modules.imageDrop = true
+        // this._options.modules.ImageResize = {
+        //   displayStyles: {
+        //     backgroundColor: 'white',
+        //     border: 'none',
+        //     color: 'black'
+        //   },
+        //   handleStyles: {
+        //     backgroundColor: 'black',
+        //     border: 'none',
+        //     color: 'white'
+        //   },
+        //   modules: [ 'Resize', 'DisplaySize', 'Toolbar' ]
+        // }
         this._options.modules.markdownShortcuts = {}
-        // this._options.modules.integratedCustom = {}
         this._options.modules.customIframe = {
           width: '100%',
           height: '500px'
@@ -188,20 +191,20 @@ export default {
           width: '100%',
           height: '500px'
         }
-        this._options.modules.customVuecomp = {
-          viewComponent: Test,
-          formComponent: Test,
-          createElementData: {
-            props: {
-              text: '测试'
-            },
-            on: {
-              'test-click': (msg) => {
-                alert(msg)
-              }
-            }
-          }
-        }
+        // this._options.modules.customVuecomp = {
+        //   viewComponent: Test,
+        //   formComponent: Test,
+        //   createElementData: {
+        //     props: {
+        //       text: '测试'
+        //     },
+        //     on: {
+        //       'test-click': (msg) => {
+        //         alert(msg)
+        //       }
+        //     }
+        //   }
+        // }
         this._options.modules.imageUploadHandle = {
           upload: file => {
             console.log('正在上传...', file)
@@ -245,13 +248,22 @@ export default {
 
         // Update model if text changes
         this.quill.on('text-change', (delta, oldDelta, source) => {
-          // 输入法结束后再处理事件
-          if (!this.quill.selection.composing) {
+          console.log('*********', JSON.stringify(delta.ops))
+          if (this.quill.selection.composing) {
+            this.isInputChinese = true
+          } else { // 输入法结束后再处理事件
             let html = this.$refs.editor.children[0].innerHTML
             const quill = this.quill
             const text = this.quill.getText()
             if (html === '<p><br></p>') html = ''
             this.localContent = html
+
+            // 如果输入的是中文的话对delta进行处理
+            if (this.isInputChinese) {
+              delta.ops.pop()
+              this.isInputChinese = false
+            }
+
             this.$emit('input', this.localContent)
             this.$emit('text-change', { html, text, quill, change: {delta, oldDelta, source} })
           }
@@ -273,7 +285,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
 pre,
 code {
   font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;

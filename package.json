@@ -1,6 +1,6 @@
 {
   "name": "quill-vue",
-  "version": "1.4.51",
+  "version": "1.4.58",
   "description": "A Vue.js project",
   "author": "sixty",
   "keywords": [
@@ -10,7 +10,7 @@
   "private": false,
   "main": "dist/quill-vue.js",
   "unpkg": "dist/quill-vue.min.js",
-  "module": "dist/quill-vue.esm.js",
+  "module": "src/quill-vue.js",
   "prepublishOnly": "npm run build",
   "license": "MIT",
   "scripts": {
@@ -28,12 +28,9 @@
   ],
   "typings": "./types/index.d.ts",
   "dependencies": {
-    "quill": "^1.3.6",
-    "quill-image-drop-module": "^1.0.3",
-    "quill-image-resize-module": "^3.0.0",
+    "quill": "^2.0.0-dev.3",
     "quill-integrated-custom": "^1.1.36",
-    "quill-markdown-shortcuts": "^0.0.10",
-    "quill-plugin-image-upload": "^0.0.6"
+    "quill-markdown-shortcuts": "^0.0.10"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
