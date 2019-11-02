@@ -12,6 +12,7 @@ import _Quill from 'quill'
 // import ImageResize from 'quill-image-resize-module'
 import MarkdownShortcuts from 'quill-markdown-shortcuts'
 import 'quill-integrated-custom'
+import { IframeCustom,  VideoCustom, ImageUploadHandle } from 'quill-integrated-custom'
 // import imageUpload from 'quill-plugin-image-upload'
 import Test from './Test'
 
@@ -47,6 +48,9 @@ _Quill.register({
   // 'modules/imageDrop': ImageDrop,
   // 'modules/ImageResize': ImageResize,
   'modules/markdownShortcuts': MarkdownShortcuts,
+  'modules/customIframe': IframeCustom,
+  'modules/customVideo': VideoCustom,
+  'modules/imageUploadHandle': ImageUploadHandle
   // 'modules/imageUpload': imageUpload
 }, true)
 
@@ -107,8 +111,7 @@ export default {
   data () {
     return {
       localContent: '',
-      defaultOptions,
-      isInputChinese: false
+      defaultOptions
     }
   },
 
@@ -248,25 +251,14 @@ export default {
 
         // Update model if text changes
         this.quill.on('text-change', (delta, oldDelta, source) => {
-          console.log('*********', JSON.stringify(delta.ops))
-          if (this.quill.selection.composing) {
-            this.isInputChinese = true
-          } else { // 输入法结束后再处理事件
-            let html = this.$refs.editor.children[0].innerHTML
-            const quill = this.quill
-            const text = this.quill.getText()
-            if (html === '<p><br></p>') html = ''
-            this.localContent = html
-
-            // 如果输入的是中文的话对delta进行处理
-            if (this.isInputChinese) {
-              delta.ops.pop()
-              this.isInputChinese = false
-            }
-
-            this.$emit('input', this.localContent)
-            this.$emit('text-change', { html, text, quill, change: {delta, oldDelta, source} })
-          }
+          console.log('**编辑器最原始的改变信息**', JSON.stringify(delta.ops))
+          let html = this.$refs.editor.children[0].innerHTML
+          const quill = this.quill
+          const text = this.quill.getText()
+          if (html === '<p><br></p>') html = ''
+          this.localContent = html
+          this.$emit('input', this.localContent)
+          this.$emit('text-change', { html, text, quill, change: {delta, oldDelta, source} })
         })
         // Emit ready event
         this.$emit('ready', this.quill)
@@ -291,6 +283,10 @@ code {
   font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
 }
 .quill-editor > .ql-snow .ql-editor pre.ql-syntax {
+  background-color: #f0f0f0;
+  color: #2c3e50a9;
+}
+.quill-editor > .ql-snow .ql-editor .ql-code-block-container {
   background-color: #f0f0f0;
   color: #2c3e50a9;
 }
