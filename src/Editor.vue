@@ -208,21 +208,21 @@ export default {
         //     }
         //   }
         // }
-        this._options.modules.imageUploadHandle = {
-          upload: file => {
-            console.log('正在上传...', file)
-            // return a Promise that resolves in a link to the uploaded image
-            const ret = new Promise((resolve, reject) => {
-              resolve('https://lib.sixtyden.com/201808020245150.jpg')
-            })
-
-            ret.then((url) => {
-              console.log('上传成功', url)
-            })
-
-            return ret
-          }
-        }
+        // this._options.modules.imageUploadHandle = {
+        //   upload: file => {
+        //     console.log('正在上传...', file)
+        //     // return a Promise that resolves in a link to the uploaded image
+        //     const ret = new Promise((resolve, reject) => {
+        //       resolve('https://lib.sixtyden.com/201808020245150.jpg')
+        //     })
+        //
+        //     ret.then((url) => {
+        //       console.log('上传成功', url)
+        //     })
+        //
+        //     return ret
+        //   }
+        // }
 
         // Instance
         this.quill = new Quill(this.$refs.editor, this._options)
